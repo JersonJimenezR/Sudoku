@@ -52,20 +52,20 @@ public class Index {
     
     public void printSudoku(String[][] sudoku)
     {
-        for (int i = 0; i < 9; i++) 
-        {            
-            for (int j = 0; j < 9; j++) 
-            {    
-                if(i == 0 && j == 0 || i == 8 && j == 8)
-                {
-                    System.out.println("-------------");
-                }
-                
-                System.out.println(sudoku[i][j]);
+        for (int i = 0; i < 9; i++) {
+            
+            if( i == 0 || i == 3 || i == 6)
+            {
+                System.out.println("-------------------");
             }
             
-            System.out.println();
+            System.out.println("|"+sudoku[i][0]+" "+sudoku[i][1]+" "+sudoku[i][2]+"|"+sudoku[i][3]+" "+sudoku[i][4]+" "+sudoku[i][5]+"|"+sudoku[i][6]+" "+sudoku[i][7]+" "+sudoku[i][8]+"|");
         }
+        
+        System.out.println("-------------------");
+                
+                
+                 
     }
     
     
