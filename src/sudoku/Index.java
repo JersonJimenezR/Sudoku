@@ -1,6 +1,5 @@
 
 package sudoku;
-import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -51,7 +50,7 @@ public class Index {
     
     //--Pintar sudoku 
     
-    public void printSudoku(int[][] sudoku)
+    public void printSudoku(String[][] sudoku)
     {
         for (int i = 0; i < 9; i++) 
         {            
