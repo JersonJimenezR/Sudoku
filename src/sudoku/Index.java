@@ -38,8 +38,11 @@ public class Index {
         {
             case 1:
                 
-                System.out.println("Seleccionaste sudoku Fácil");
+                System.out.println("Seleccionaste sudoku Fácil \n");
                 this.printSudoku(easy.initEasy());
+                System.out.println();
+                System.out.println("¿Resolver S/N ?");
+                this.decision(sc.next());
                 break;
                 
                 
@@ -63,11 +66,23 @@ public class Index {
         }
         
         System.out.println("-------------------");
-                
-                
                  
     }
     
+    
+    public void decision(String s)
+    {
+        if("N".equals(s))
+        {            
+            System.out.println("Hasta pronto");            
+            
+        }else
+        {
+            //--Resolver soduko
+            
+            //this.solve();
+        }
+    }
     
 
 }

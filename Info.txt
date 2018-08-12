@@ -1,0 +1,34 @@
+-- [BUSQUEDA]
+
+
+1. Recorre todas las matrices buscando la que tenga más números (Menos espacios vacíos)
+
+
+-- [PONER]
+	
+	-- [RESTRICCIONES]
+
+		1. En cada uno de los espacios en blanco evalúa la matriz 3x3
+		2. Evalúa la fila y la columna que corresponda
+		3. Esta evaluación se realiza con los números del 1 al 9 excluyendo los números que ya están puestos en la matriz y los que están vetados en el vector 3x3
+
+
+	-- [OPCIONES]
+
+		1. Si el número puede estar y hay una única opción deacuerdo a las restricciones previas entonces lo pone
+
+		-- Si lo pone entonces:
+
+			1. Limpia el vector vetados (3x3)
+			2. Limpia el vector vetados (9x9), este contiene el nombre de la matriz (A,B,C,D,E,F,G,H,I)
+			3. Evalúa la matriz 3x3 por si sólo falta un número, entonces pone el número que falta, veta la matriz en el vector completados 9x9 y el número que puso ejecuta de nuevo el ciclo [PONER]
+			4. Evalúa la fila y columna de sus coordenadas y si sólo falta un número lo pone y se repite el ciclo [PONER]
+
+		-- Si no lo pone entonces:
+	
+			1. Se agrega el número al vector vetados 3x3
+			2. Si al final la matriz no tuvo cambios se veta la matriz 9x9, limpia el vector vetados 3x3 y se repite el ciclo [BUSQUEDA]
+
+
+
+
