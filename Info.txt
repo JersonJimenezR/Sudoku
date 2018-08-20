@@ -13,7 +13,7 @@
 		3. Esta evaluación se realiza con los números del 1 al 9 excluyendo los números que ya están puestos en la matriz y los que están vetados en el vector 3x3
 
 
-	-- [OPCIONES]
+	-- [OPCIONES DE PONER]
 
 		1. Si el número puede estar y hay una única opción deacuerdo a las restricciones previas entonces lo pone
 
