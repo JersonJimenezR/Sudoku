@@ -1,5 +1,6 @@
 
 package sudoku;
+import java.util.Arrays;
 import java.util.Scanner;
 
 /**
@@ -91,11 +92,26 @@ public class Index {
         //-- Busqueda de matriz 3x3 con menos espacios vacíos 
         
         int[] XY = this.busqueda(sudoku);
-        String[][] M3x3 = new String[3][3];
+        
+        return Arrays.toString(XY);
+        
+        /*String[][] M3x3 = new String[3][3];
         M3x3 = this.matriz3x3(sudoku, XY[1] , XY[2]);
-        return this.poner(sudoku , M3x3 , XY);
+        return this.poner(sudoku , M3x3 , XY);*/
 
     }
+    
+    
+    /*
+        Recorre toda la matriz 9x9 y retorna un vector donde las posiciones son:
+            [0] = Cantidad de números encontrados en una matriz 3x3
+            [1] = Coordenada final en X de la matriz 3x3 donde se encontró el mayor número de números
+            [2] = Coordenada final en Y de la matriz 3x3 donde se encontró el mayor número de números
+    
+        @Params String[][]
+        @Return int[]
+    
+    */
     
     public int[] busqueda(String[][] sudoku)
     {        
@@ -103,13 +119,16 @@ public class Index {
         int C = 3; //-- Posición Columna
         int F = 3; //-- Posición Fila
         int[] M = new int[3]; //--Matriz que lleva el mayor número de números
-        int K = 0; //--Última columna de M
+        M[0] = 0;
+        int X = 0; //--Última columna de M
+        int Y =0; //--Última fila de M
         
-        for (int i = 0; i < 9; i++) 
+        int i =0;
+        while (i < 9) 
         {     
-            if(i%F != 0)
+            if(i<F)
             {
-                for (int j = C-3; j >= 0; j++) 
+                for (int j = C-3; j <= C; j++) 
                 {
                     if(j%C != 0)
                     {  
@@ -120,11 +139,10 @@ public class Index {
 
                     }else
                     {
-                        K = j-1;
-                        break;
+                        X = j-1;
                     }                      
                 }
-                
+               i++; 
             }else
             {
                 //-- Si la cantidad de números de la matriz 3x3 es mayor a la anterior entonces esta será la nueva matriz de busqueda
@@ -132,17 +150,22 @@ public class Index {
                 if(numeros > M[0])
                 {
                     M[0] = numeros;
-                    M[1] = i;
-                    M[2] = K;
-                }
-                
+                    M[1] = i+2;
+                    M[2] = X;
+                    
+                    numeros = 0;
+                }           
                 C +=3;
-                
-                if(C > 9)
+                  
+                if(C == 9)
                 {
-                    C = 0;
-                    i += 3;
-                }                
+                    C = 3;
+                    F+= 3;
+                }  
+                
+                i = F-3;
+                
+                
             }            
         }
                 

@@ -45,15 +45,15 @@ public class SudokuEasy {
         
         //--C
         
-        sudokuEasy[0][6] = " ";
+        sudokuEasy[0][6] = "6";
         sudokuEasy[0][7] = "9";
         sudokuEasy[0][8] = " ";
         sudokuEasy[1][6] = "3";
         sudokuEasy[1][7] = "7";
         sudokuEasy[1][8] = " ";
-        sudokuEasy[2][6] = " ";
+        sudokuEasy[2][6] = "4";
         sudokuEasy[2][7] = " ";
-        sudokuEasy[2][8] = " ";
+        sudokuEasy[2][8] = "5";
         
         
         //--D
