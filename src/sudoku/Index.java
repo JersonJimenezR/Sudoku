@@ -53,7 +53,13 @@ public class Index {
         }
     }
     
-    //--Pintar sudoku 
+    /*
+    * Pintar sudoku 9x9
+    *
+    *
+    * @param String[][]
+    * @return Message
+    */
     
     public void printSudoku(String[][] sudoku)
     {
@@ -71,6 +77,12 @@ public class Index {
                  
     }
     
+    /*
+    * Válida si se debe iniciar el proceso para resolver el sudoku
+    *
+    * @param String , String[][]
+    * @return Message
+    */
     
     public void decision(String s , String[][] sudoku)
     {
@@ -86,6 +98,11 @@ public class Index {
         }
     }
     
+    /*
+    *
+    * @param
+    * @return 
+    */
     
     public String solve(String[][] sudoku)
     {
@@ -108,8 +125,8 @@ public class Index {
             [1] = Coordenada final en X de la matriz 3x3 donde se encontró el mayor número de números
             [2] = Coordenada final en Y de la matriz 3x3 donde se encontró el mayor número de números
     
-        @Params String[][]
-        @Return int[]
+        @param String[][]
+        @return int[]
     
     */
     
@@ -172,6 +189,14 @@ public class Index {
         return M;
     }
     
+    /*
+    * Reconstruir la matrix 3x3 (A,B,C,D,E,...) a partir de dos números finales de la matriz 3x3
+    * Ejemplo:
+    *   De la matriz A tendríamos los números [2,2] que son las posiciones finales de la matriz A
+    *
+    * @param
+    * @return
+    */
     
     public String[][] matriz3x3(String[][] sudoku , int a , int b)
     {
@@ -246,6 +271,13 @@ public class Index {
     }
     
     
+    /*
+    *   Válida que el número que se le entrega no exista en la matriz 3x3, si lo encuentra retornará falso
+    *
+    * @param String[][] , String
+    * @return Boolean
+    */
+    
     public boolean evaluarNumero3x3(String[][] M3x3 , String numero)
     {
         boolean respuesta = false;
@@ -264,16 +296,28 @@ public class Index {
         return respuesta;
     }
     
+    
+    /*
+    * Recorre la fila y la columna buscando el número entregado
+    *
+    *
+    * @param String[][] , int , int , String
+    * @return
+    */
         
     public boolean evaluarNumeroFC(String[][] sudoku , int a , int b , String numero)
     {
         boolean respuesta = false;
+           
+        // Busca el número en toda la fila X
         
         for (int i = 0; i < 9; i++) 
         {
             if(sudoku[a][i] != numero)
                 respuesta = true;
         } 
+        
+        // Busca el número en toda la fila Y
         
         for (int i = 0; i < 3; i++) 
         {
