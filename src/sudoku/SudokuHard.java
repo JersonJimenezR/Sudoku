@@ -14,7 +14,7 @@ public class SudokuHard
 {
     //--Mostrar sudoku fácil
     
-    public String[][] initEasy()
+    public String[][] initHard()
     {
         String[][] sudokuHard = new String[9][9];
         
