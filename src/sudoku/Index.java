@@ -1,7 +1,7 @@
 
 package sudoku;
-import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  *
@@ -102,8 +102,9 @@ public class Index {
         }else
         {
             //--Resolver soduko
-            
-            this.printSudoku(this.solve(sudoku));
+            //int[] matrizVetados = new int[10];
+            int matrizVetados[] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+            this.printSudoku(this.solve(sudoku , matrizVetados));
         }
     }
     
@@ -113,16 +114,103 @@ public class Index {
     * @return 
     */
     
-    public String[][] solve(String[][] sudoku)
+    public String[][] solve(String[][] sudoku , int[] matrizVetados)
     {
+        String[][] sudokuCopia = sudoku;
+        String[][] sudokuRespuesta;        
+        
+        
         //-- Busqueda de matriz 3x3 con menos espacios vacíos 
         
-        int[] XY = this.busqueda(sudoku); 
-        return this.poner(sudoku , this.matriz3x3(sudoku , XY[1] , XY[2]) , XY);
+        int[] XY = this.busqueda(sudoku , matrizVetados); 
         
-       
-
+        //int XY[] = {5,8,5};
+        sudokuRespuesta = this.poner(sudoku , this.matriz3x3(sudoku , XY[1] , XY[2]) , XY);
+        
+        if(Arrays.equals(sudokuRespuesta, sudokuCopia))
+        {
+            matrizVetados[this.posicionM3x3(XY[1] , XY[2])] = this.posicionM3x3(XY[1] , XY[2]);
         }
+        
+        if(this.isComplete(sudokuRespuesta))
+        {
+            return sudokuRespuesta;
+        }else
+        {
+            //this.solve(sudokuRespuesta , matrizVetados);
+        }
+        
+ 
+        return sudokuRespuesta;
+    }
+    
+    
+    /*
+    
+    
+    */
+    
+    public boolean isComplete(String[][] sudoku)
+    {
+        boolean respuesta = true;
+        
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if(" ".equals(sudoku[i][j]))
+                    respuesta = false;
+            }
+        }
+        
+        return respuesta;
+    }
+    
+    
+    /*
+        Retorna la posición que corresponde a la matriz 3x3
+        
+    */
+    
+    public int posicionM3x3(int a , int b)
+    {
+        int respuesta = 0;
+        
+        if(a >= 0 && a <= 2 && b >= 0 && b <= 2)
+        {
+            respuesta = 1;
+            
+        }else if(a >= 0 && a <= 2 && b >= 3 && b <= 5)
+        {
+            respuesta = 2;
+            
+        }else if(a >= 0 && a <= 2 && b >= 6 && b <= 8)
+        {
+            respuesta = 3;
+            
+        }else if(a >= 3 && a <= 5 && b >= 0 && b <= 2)
+        {
+            respuesta = 4;
+        }else if(a >= 3 && a <= 5 && b >= 3 && b <= 5)
+        {
+            respuesta = 5;
+            
+        }else if(a >= 3 && a <= 5 && b >= 6 && b <= 8)
+        {
+            respuesta = 6;
+        }else if(a >= 6 && a <= 8 && b >= 0 && b <= 2)
+        {
+            respuesta = 7;
+            
+        }else if(a >= 6 && a <= 8 && b >= 3 && b <= 5)
+        {
+            respuesta = 8;
+        }else if(a >= 6 && a <= 8 && b >= 6 && b <= 8)
+        {
+            respuesta = 9;
+            
+        }
+        
+        return respuesta;
+    }
     
     
     /*
@@ -136,7 +224,7 @@ public class Index {
     
     */
     
-    public int[] busqueda(String[][] sudoku)
+    public int[] busqueda(String[][] sudoku , int[] matrizVetados)
     {     
         
         int numerosEncontrados = 0;        
@@ -154,12 +242,18 @@ public class Index {
             if(i < Fila)
             {
                 for (int j = Columna-3; j < Columna; j++) 
-                {                    
-                    if(sudoku[i][j] != " ")
+                {   
+                    if(this.posicionM3x3(i,j) != matrizVetados[this.posicionM3x3(i,j)])
                     {
-                        numerosEncontrados++;                        
-                    }                    
-                    posicionX = j;
+                        if(!" ".equals(sudoku[i][j]))
+                        {
+                            numerosEncontrados++;                        
+                        }                    
+                        posicionX = j;
+                    }else
+                    {
+                        i+=2;
+                    }
                 }
                 
                i++; 
@@ -225,7 +319,12 @@ public class Index {
     public String[][] poner(String[][] sudoku , String[][] M3x3 , int[] XY)
     {
         String[] poner = this.evaluarNumero(sudoku, M3x3, XY);
-        sudoku[Integer.parseInt(poner[1])][Integer.parseInt(poner[2])] = poner[0];
+        String[] matrizVetadas = new String[9];
+        
+        if(poner[0] == "1")
+        {
+            sudoku[Integer.parseInt(poner[2])][Integer.parseInt(poner[3])] = poner[1];                
+        }
                 
         return sudoku;
     }
@@ -240,75 +339,44 @@ public class Index {
     
     
     public String[] evaluarNumero(String[][] sudoku , String[][] M3x3 , int[] XY)
-    {
-        int numero = 1; //--Número a evaluar en el sudoku
-        int opciones = 0; //--Número de posibilidades que tiene un número evaluado
-        int[] vetados = new int[9]; //--Vector de números que no pueden estar en la matriz 3x3        
-        boolean V = false; //--Control de condicional vetados
-        int posicionX , posicionY; //-- Posición en X y Y donde puede ir el posible número        
-        String[] posible = new String[3];
-        
-        int i = 0; 
-        while(i < 3)
-        {       
-            for (int j = 0; j < 3; j++) 
-            {                
-                if(" ".equals(M3x3[i][j]))
+    {                 
+        String[] posible = new String[4]; // Posible en la posición [0] es el estado, [1] Posible número, [2] posición X , [3] posición Y.        
+        int[] vectorOpcionesNumero = new int[2];
+ 
+        for (int numero = 1; numero < 10; numero++) 
+        {                        
+            if(this.evaluarNumero3x3(M3x3, Integer.toString(numero)))
+            {                                
+                vectorOpcionesNumero = this.evaluarNumeroFC(sudoku , XY[1] - 2, XY[2] - 2, Integer.toString(numero) , M3x3);
+                if(vectorOpcionesNumero[0] == 1)
                 {
-                    if(this.evaluarNumero3x3(M3x3, Integer.toString(numero)))
-                    {
-                        if(this.evaluarNumeroFC(sudoku , XY[1] - 2 + i , XY[2] - 2 + j , Integer.toString(numero)))
-                        {
-                            posible[0] = Integer.toString(numero);
-                            posible[1] = Integer.toString(XY[1] - 2 + i);
-                            posible[2] = Integer.toString(XY[2] - 2 + j);
-                            
-                            opciones++;
-
-                            if(opciones > 1)
-                            {                                
-                                vetados[numero-1] = numero;
-                                numero++;
-                                posible[0] = " ";
-                                opciones = 0;
-                                V = true;                                                        
-                            }
-                        }else
-                        {
-                            vetados[numero-1] = numero;
-                            numero++;
-                            posible[0] = " ";
-                            opciones = 0;
-                            V = true; 
-                            
-                        }                       
-                    }else
-                    {
-                        vetados[numero-1] = numero;
-                        numero++;
-                        posible[0] = " ";
-                        opciones = 0;
-                        V = true; 
-                    }                   
-                }
-            }
-            
-            if(V)
-            {
-                i=0;
-                V = false;
+                    posible[0] = "1";
+                    posible[1] = Integer.toString(numero);
+                    posible[2] = Integer.toString(vectorOpcionesNumero[1]);
+                    posible[3] = Integer.toString(vectorOpcionesNumero[2]); 
+                    
+                    break;
+                    
+                }else
+                {                                                  
+                    posible[0] = "0";                                        
+                    System.out.println("Entrando a falso evaluación FC "+numero);
+                }     
+                
             }else
-            {
-                i++;
-            }            
-        }
-
+            {                
+                posible[0] = "0";
+                System.out.println("Entrando a falso evaluación 3x3 "+numero);
+            } 
+           
+        }     
+         
         return posible;
     }
     
     
     /*
-    *   Válida que el número que se le entrega no exista en la matriz 3x3, si lo encuentra retornará falso
+    *   Válida que el número que se le entrega no exista en la matriz 3x3, si lo encuentra retornará false
     *
     * @param String[][] , String
     * @return Boolean
@@ -316,15 +384,15 @@ public class Index {
     
     public boolean evaluarNumero3x3(String[][] M3x3 , String numero)
     {
-        boolean respuesta = false;
+        boolean respuesta = true;
         
         for (int i = 0; i < 3; i++) 
         {
             for (int j = 0; j < 3; j++) 
             {
-                if(M3x3[i][j] != numero)
+                if(M3x3[i][j].equals(numero))
                 {
-                    respuesta = true;
+                    respuesta = false;
                 }
             }
         }
@@ -341,25 +409,54 @@ public class Index {
     * @return
     */
         
-    public boolean evaluarNumeroFC(String[][] sudoku , int a , int b , String numero)
-    {
-        boolean respuesta = true;
-
-        for (int i = 0; i < 9; i++) 
-        {
-            // Busca el número en toda la fila X
-            
-            if(sudoku[i][b] == numero)
-                respuesta = false;
-            
-            // Busca el número en toda la fila Y
-            
-            if(sudoku[a][i] == numero)
-                respuesta = false;
-
-        } 
+    public int[] evaluarNumeroFC(String[][] sudoku , int a , int b , String numero, String[][] M3x3)
+    {        
+        int opciones = 0;
+        int[] vectorOpcionesNumero = new int[3];
+        vectorOpcionesNumero[0] = 1;
         
-        return respuesta;
+        for (int i = 0; i < 3; i++) 
+        {
+            for (int j = 0; j < 3; j++) 
+            {
+                if(" ".equals(M3x3[i][j]))
+                {
+                    for (int k = 0; k < 9; k++) 
+                    {
+
+                        // Busca el número en toda la fila X y Columna Y
+
+                        if(sudoku[k][b+j].equals(numero) || sudoku[a+i][k].equals(numero))
+                            vectorOpcionesNumero[0] = 0;                        
+
+                    }
+                    
+                    if(vectorOpcionesNumero[0] == 1)
+                    {
+                        opciones++; 
+                        vectorOpcionesNumero[1] = a+i;
+                        vectorOpcionesNumero[2] = b+j;
+                    }
+                    
+                    vectorOpcionesNumero[0] = 1;
+                }
+            }
+        }
+        
+        if(opciones == 1)
+        {
+            vectorOpcionesNumero[0] = 1;            
+        }else
+        {
+            
+            vectorOpcionesNumero[0] = 0;
+        }
+        
+        return vectorOpcionesNumero;
+    }
+
+    private boolean assertArrayEquals(String[][] sudokuRespuesta, String[][] sudokuCopia) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
