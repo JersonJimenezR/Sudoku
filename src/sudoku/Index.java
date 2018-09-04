@@ -104,7 +104,6 @@ public class Index {
         //-- Busqueda de matriz 3x3 con menos espacios vacíos 
         int[] XY = this.busqueda(sudoku, matrizVetados);
 
-        //int XY[] = {5,8,5};
         if (XY[0] != 0) {
             sudokuRespuesta = this.poner(sudoku, this.matriz3x3(sudoku, XY[1], XY[2]), XY);
 
@@ -128,16 +127,18 @@ public class Index {
                 matrizVetados[i] = 0;
             }
             int[] XY2 = this.busqueda2(sudoku, matrizVetados);
-            sudokuRespuesta = this.poner2(sudoku, this.matriz3x3(sudoku, XY2[1], XY2[2]), XY2);   
-        }
-        /*if (this.isComplete(sudokuRespuesta)) {
+            sudokuRespuesta = this.poner2(sudoku, this.matriz3x3(sudoku, XY2[1], XY2[2]), XY2);
+            if (!Arrays.deepEquals(sudokuRespuesta, pass)) {
+                pass = this.poner2(pass, this.matriz3x3(pass, XY2[1], XY2[2]), XY2);
+            }
+            if (this.isComplete(sudokuRespuesta)) {
                 return sudokuRespuesta;
             } else {
                 this.solve(sudokuRespuesta, matrizVetados, pass);
-
-            }*/
-
-        return sudokuRespuesta;
+            }
+        }
+        
+         return sudokuRespuesta;
     }
 
     /*
@@ -302,6 +303,55 @@ public class Index {
         return M;
     }
 
+    public int[] busqueda3(String[][] sudoku, int[] matrizVetados) {
+
+        int numerosEncontrados = 0;
+        int Columna = 3; //-- Posición Columna
+        int Fila = 3; //-- Posición Fila
+        int[] M = new int[3]; //--Vector que lleva el mayor número de números, y la posicion del número
+        M[0] = 0;
+        int posicionX = 0; //--Última columna de M
+
+        int i = 0;
+
+        for (int k = 0; k < 36; k++) //--36 es el número de ciclos que debe hacer, por cada 3x3 se hacen 4 iteraciones
+        {
+            if (i < Fila) {
+                for (int j = Columna - 3; j < Columna; j++) {
+                    if (this.posicionM3x3(i, j) != matrizVetados[this.posicionM3x3(i, j)]) {
+                        if (!" ".equals(sudoku[i][j])) {
+                            numerosEncontrados++;
+                        }
+                        posicionX = j;
+                    }
+                }
+
+                i++;
+            } else {
+                //-- Si la cantidad de números de la matriz 3x3 es mayor a la anterior entonces esta será la nueva matriz de busqueda
+
+                if (numerosEncontrados > M[0]) {
+                    M[0] = numerosEncontrados;
+                    M[1] = i - 1;
+                    M[2] = posicionX;
+                }
+
+                numerosEncontrados = 0;
+                Columna += 3;
+
+                if (Columna == 12) {
+                    Columna = 3;
+                    Fila += 3;
+                }
+
+                i = Fila - 3;
+
+            }
+        }
+
+        return M;
+    }
+
 
     /*
     * Reconstruir la matrix 3x3 (A,B,C,D,E,...) a partir de dos números finales de la matriz 3x3
@@ -387,6 +437,36 @@ public class Index {
         for (int numero = 1; numero < 10; numero++) {
             if (this.evaluarNumero3x3(M3x3, Integer.toString(numero))) {
                 vectorOpcionesNumero = this.evaluarNumeroFC2(sudoku, XY[1] - 2, XY[2] - 2, Integer.toString(numero), M3x3);
+                if (vectorOpcionesNumero[0] == 1) {
+                    posible[0] = "1";
+                    posible[1] = Integer.toString(numero);
+                    posible[2] = Integer.toString(vectorOpcionesNumero[1]);
+                    posible[3] = Integer.toString(vectorOpcionesNumero[2]);
+
+                    break;
+
+                } else {
+                    posible[0] = "0";
+                    //System.out.println("Entrando a falso evaluación FC " + numero);
+                }
+
+            } else {
+                posible[0] = "0";
+                //System.out.println("Entrando a falso evaluación 3x3 " + numero);
+            }
+
+        }
+
+        return posible;
+    }
+
+    public String[] evaluarNumero3(String[][] sudoku, String[][] M3x3, int[] XY) {
+        String[] posible = new String[4]; // Posible en la posición [0] es el estado, [1] Posible número, [2] posición X , [3] posición Y.        
+        int[] vectorOpcionesNumero = new int[2];
+
+        for (int numero = 1; numero < 10; numero++) {
+            if (this.evaluarNumero3x3(M3x3, Integer.toString(numero))) {
+                vectorOpcionesNumero = this.evaluarNumeroFC3(sudoku, XY[1] - 2, XY[2] - 2, Integer.toString(numero), M3x3);
                 if (vectorOpcionesNumero[0] == 1) {
                     posible[0] = "1";
                     posible[1] = Integer.toString(numero);
@@ -504,6 +584,44 @@ public class Index {
         }
 
         if (opciones <= 2) {
+            vectorOpcionesNumero[0] = 1;
+        } else {
+
+            vectorOpcionesNumero[0] = 0;
+        }
+
+        return vectorOpcionesNumero;
+    }
+
+    public int[] evaluarNumeroFC3(String[][] sudoku, int a, int b, String numero, String[][] M3x3) {
+        int opciones = 0;
+        int[] vectorOpcionesNumero = new int[3];
+        vectorOpcionesNumero[0] = 1;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (" ".equals(M3x3[i][j])) {
+                    for (int k = 0; k < 9; k++) {
+
+                        // Busca el número en toda la fila X y Columna Y
+                        if (sudoku[k][b + j].equals(numero) || sudoku[a + i][k].equals(numero)) {
+                            vectorOpcionesNumero[0] = 0;
+                        }
+
+                    }
+
+                    if (vectorOpcionesNumero[0] == 1) {
+                        opciones++;
+                        vectorOpcionesNumero[1] = a + i;
+                        vectorOpcionesNumero[2] = b + j;
+                    }
+
+                    vectorOpcionesNumero[0] = 1;
+                }
+            }
+        }
+
+        if (opciones == 1) {
             vectorOpcionesNumero[0] = 1;
         } else {
 
